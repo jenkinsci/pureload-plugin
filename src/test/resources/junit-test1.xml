@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright (c) 2019 PureLoad Software Group AB. All rights reserved.
+  -->
+
+<!-- Example 1: A simple test with 2 scenarios and no errors -->
+<testsuites>
+    <testsuite name="smple.plc" timestamp="2017-12-04T16:09:48.703" time="51" tests="3" failures="1" errors="0" hostname="192.168.1.157">
+        <testcase classname="Scenario.Scenario0" name="Scenario0" status="Ok" time="1">
+        </testcase>
+        <testcase classname="Scenario.Scenario1" name="Scenario1" status="Ok" time="0">
+        </testcase>
+    </testsuite>
+</testsuites>

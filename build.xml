@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ Copyright (c) 2019 PureLoad Software Group AB. All rights reserved.
+  -->
+
+<!-- Ant Build file. Actually uses maven to do it's work! -->
+<project name="pureload" default="all" basedir=".">
+
+    <property name="dist.dir" value="./dist"/>
+
+    <!-- Check that maven is available -->
+    <property environment="env" />
+    <available file="mvn"
+               filepath="${env.PATH}"
+               property="maven.present"/>
+    <fail unless="maven.present">Maven is not available!</fail>
+
+    <!-- Init version and plugin-name variables from maven -->
+    <target name="init-mvn-vars">
+        <exec executable="sh" newenvironment="false" outputproperty="version">
+            <arg value="-c"/>
+            <arg value="mvn help:evaluate -Dexpression='project.version' | grep -Ev '(^\[|Download\w+:)'" />
+        </exec>
+        <exec executable="sh" newenvironment="false" outputproperty="plugin-name">
+            <arg value="-c"/>
+            <arg value="mvn help:evaluate -Dexpression='project.artifactId' | grep -Ev '(^\[|Download\w+:)'" />
+        </exec>
+    </target>
+
+    <target name="clean">
+        <exec executable="mvn">
+            <arg value="clean"/>
+        </exec>
+        <delete dir="${dist.dir}"/>
+        <delete dir="work"/>
+    </target>
+
+    <target name="compile">
+        <exec executable="mvn">
+            <arg value="compile"/>
+        </exec>
+    </target>
+    <target name="all" depends="compile"/>
+
+    <target name="test">
+        <exec executable="mvn">
+            <arg value="-Djetty.port=9090"/>
+            <arg value="hpi:run"/>
+        </exec>
+    </target>
+
+    <target name="release" depends="init-mvn-vars">
+        <exec executable="mvn">
+            <arg value="package"/>
+        </exec>
+        <mkdir dir="${dist.dir}"/>
+        <property name="hpi.file" value="${dist.dir}/${plugin-name}-${version}.hpi"/>
+        <copy file="target/${plugin-name}.hpi" tofile="${hpi.file}"/>
+        <echo message="Created plugin release: ${hpi.file}"/>
+    </target>
+
+    <!-- upload to server -->
+    <target name="upload">
+        <scp verbose="true" keyfile="${user.home}/.ssh/id_rsa" trust="true" passphrase=""
+             todir="${user.name}@www.minq.se:/opt/product_download/jenkins-pureload">
+            <fileset dir="${dist.dir}">
+                <include name="*.hpi"/>
+            </fileset>
+        </scp>
+    </target>
+
+</project>

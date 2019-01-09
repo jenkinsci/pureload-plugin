@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) 2019 PureLoad Software Group AB. All rights reserved.
+ */
+
+.header img {
+    float: left;
+    width: 32px;
+    height: 32px;
+}
+
+.header h1 {
+    position: relative;
+    top: 2px;
+    left: 10px;
+}
+
+.red, .red a {
+    color: red;
+}
+
+#results-summary table {
+    border-collapse: separate;
+}
+
+#results-summary th {
+    text-align: left;
+    padding: 0.25em;
+    padding-right: 1em;
+    vertical-align: top;
+    background-color: #3ca33f;
+    color: #ffffff;
+}
+
+#results-summary th.left {
+    text-align: left;
+}
+
+#results-summary th.right {
+    text-align: right;
+}
+
+#results-summary th.transparent {
+    background-color: transparent;
+    color: black;
+}
+
+#results-summary th.transparent.red {
+    background-color: transparent;
+    color: red;
+}
+
+#results-summary td {
+    width: 40em;
+    text-align: left;
+    padding: 0.25em;
+    padding-left: .5em;
+    vertical-align: top;
+    background-color: #ebebeb;
+}
+
+#results-summary td.left {
+    text-align: left;
+}
+
+#results-summary td.right {
+    text-align: right;
+}
+
+#results-summary td.transparent {
+    background-color: transparent;
+    color: black;
+}
+
+#results-summary td.transparent.red {
+    background-color: transparent;
+    color: red;
+}
+
+#results-summary ul {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    padding-left: 0em;
+    list-style-type: none;
+}
+
+#results-summary li {
+    /*list-style-type: square;*/
+    /*margin-left: 0px;*/
+}
+
+#results-summary .transparent {
+    background-color: transparent;
+    color: #111;
+}
+
+#results-summary .error {
+    color: red;
+}
+
+#results-summary .error-box {
+    color: red;
+    font-weight: bold;
+    border: thin solid red;
+    padding: 0.5em;
+}
+
+.short-textbox{
+    width: 150px;
+}

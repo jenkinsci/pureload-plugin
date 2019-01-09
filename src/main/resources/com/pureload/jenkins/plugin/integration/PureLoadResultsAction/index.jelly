@@ -1,0 +1,95 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+	<l:layout css="${rootURL}/plugin/pureload/style.css" norefresh="true">
+    	<st:include it="${it.build}" page="sidepanel.jelly" />
+    	<l:main-panel>
+    	 <div id="results-summary">
+    	   <div class="header">
+             <img src="${rootURL}/plugin/pureload/images/check.png" alt="logo" />
+             <h1>PureLoad Results</h1>
+           </div>
+
+           <j:set var="report" value="${it.report}"/>
+
+           <table>
+               <tr>
+                  <th class="right transparent">PLC:</th>
+                  <td class="left transparent">${report.getPlcFileName()}</td>
+               </tr>
+               <tr>
+                  <th class="right transparent">Date Executed:</th>
+                  <td class="transparent">${report.date}</td>
+               </tr>
+               <tr>
+                   <th class="right transparent">Execution Time:</th>
+                   <td class="transparent">${report.execTime} seconds</td>
+               </tr>
+               <j:choose>
+                <j:when test="${report.success}">
+                <tr>
+                 <th class="transparent right">Status:</th>
+                 <td class="transparent">Success</td>
+                </tr>
+                </j:when>
+                <j:otherwise>
+                <tr>
+                 <th class="transparent right">Status:</th>
+                 <td class="transparent red">Failed</td>
+                </tr>
+                </j:otherwise>
+               </j:choose>
+           </table>
+
+
+           <h3>KPI Summary</h3>
+           <table>
+              <tr>
+              <th class="left">KPI</th>
+              <th>Status</th>
+              <th>Msg</th>
+              </tr>
+               <j:forEach var="kpiResult" items="${report.getKpiResults()}">
+                 <tr>
+                 <td class="left">${kpiResult.name}</td>
+                 <j:choose>
+                 <j:when test="${kpiResult.isOk()}">
+                   <td>Ok</td>
+                 </j:when>
+                 <j:otherwise>
+                   <td class="red">Failed</td>
+                 </j:otherwise>
+                 </j:choose>
+                 <td>${kpiResult.kpiErrorMessage}</td>
+                 </tr>
+               </j:forEach>
+           </table>
+
+            <h3>Scenario Summary</h3>
+            <table class="source">
+            <tr>
+              <th>Scenario</th>
+              <th>Status</th>
+              <th>Avg. Exec Time (s)</th>
+            </tr>
+            <j:forEach var="scenarioResult" items="${report.getScenarioResults()}">
+              <tr>
+                <td class="left">${scenarioResult.name}</td>
+                <j:choose>
+                  <j:when test="${scenarioResult.isOk()}">
+                    <td>Ok</td>
+                  </j:when>
+                  <j:otherwise>
+                    <td class="red">Failed</td>
+                  </j:otherwise>
+                </j:choose>
+                <td>${scenarioResult.execTime}</td>
+              </tr>
+            </j:forEach>
+                      </table>
+
+         </div>
+  		</l:main-panel>
+  	</l:layout>
+</j:jelly>

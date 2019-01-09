@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 PureLoad Software Group AB. All rights reserved.
+  -->
+
+<!--PureLoad JUnit Report-->
+<testsuites>
+  <testsuite name="kpi-test1.plc" timestamp="2017-12-12T11:16:38.961" time="33" tests="3" failures="1" errors="0" hostname="192.168.100.70">
+    <testcase classname="Scenario.Scenario1" name="Scenario1" status="Ok" time="0" type="">
+    </testcase>
+    <testcase classname="Scenario.Scenario0" name="Scenario0" status="Ok" time="1" type="">
+    </testcase>
+    <testcase classname="KPI.KPI 01" name="KPI 01 (Summary Scenario0/SleepTask)" status="Failed" time="0" type="Summary">
+      <failure type="Summary" message="Threshold breached; value &gt; threshold max">
+      </failure>
+      <system-out>
+        KpiResult {kpi=Kpi {id=1, name='KPI 01', type=Summary, action=None, path='Scenario0/SleepTask', metric='Average', threshold=0/900/10}, timestamp=1513073823976, value=1002, status=Failed, msg='Threshold breached; value &gt; threshold max'}
+
+      </system-out>
+    </testcase>
+  </testsuite>
+</testsuites>

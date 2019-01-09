@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2019 PureLoad Software Group AB. All rights reserved.
+  -->
+
+<!--PureLoad JUnit XML Report-->
+
+<testsuites>
+  <testsuite name="runner_2692493977957796712.plc" timestamp="2018-10-11T10:06:16.869" time="178" tests="1" failures="0" errors="0" hostname="192.168.100.72">
+    <testcase classname="Scenario.Scenario0" name="Scenario0" status="Ok" time="0" type="">
+    </testcase>
+  </testsuite>
+</testsuites>

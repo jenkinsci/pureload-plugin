@@ -1,0 +1,9 @@
+<?jelly escape-by-default='true'?>
+<!--
+  This view is used to render the installed plugins page.
+  Since we don't really have anything dynamic here, let's just use static HTML.
+-->
+<div>
+  Integrates with <a href="http://www.pureload.com/">PureLoad</a> results
+  produced by PureLoad.
+</div>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019 PureLoad Software Group AB. All rights reserved.
+  -->
+
+<!--PureLoad JUnit XML Report-->
+<testsuites>
+  <testsuite name="kpi-percent.plc" timestamp="2018-12-10T14:24:03.141" time="18" tests="3" failures="1" errors="0" hostname="192.168.100.70">
+    <testcase classname="Scenario.Scenario0" name="Scenario0" status="Failed" time="0" type="">
+    </testcase>
+    <testcase classname="KPI.Ok Percent" name="Ok Percent [Total Summary  Ok Percent]" status="Failed" time="0" type="Total Summary">
+      <failure type="Total Summary" message="Threshold breached; value &gt; threshold max">
+      </failure>
+      <system-out>
+        KpiResult {kpi=Kpi {id=4, enabled='true', name='Ok Percent', type=Total Summary, action=None, path='', metric='Ok Percent', threshold=0/98.5/0}, timestamp=1544448254143, value=99.003, status=Failed, msg='Threshold breached; value &gt; threshold max'}
+
+      </system-out>
+    </testcase>
+    <testcase classname="KPI.TPS" name="TPS [Total Summary Tasks/sec]" status="Ok" time="0" type="Total Summary">
+      <system-out>
+        KpiResult {kpi=Kpi {id=5, enabled='true', name='TPS', type=Total Summary, action=None, path='null', metric='Tasks/sec', threshold=25/105/20}, timestamp=1544448264144, value=108.213, status=High, msg='Threshold breached; value &gt; threshold max'}
+
+      </system-out>
+    </testcase>
+  </testsuite>
+</testsuites>
