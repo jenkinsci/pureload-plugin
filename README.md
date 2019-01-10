@@ -1,1 +1,3 @@
-# pureload-plugin
+# Jenkins PureLoad Plugin
+
+Used to parse PureLoad 6.0 JUnit results and to publish PureLoad results.
