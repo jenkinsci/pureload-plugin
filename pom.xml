@@ -37,14 +37,13 @@
         </license>
     </licenses>
 
-    <!-- If you want this to appear on the wiki page:
     <developers>
       <developer>
-        <id>bhacker</id>
-        <name>Bob Q. Hacker</name>
-        <email>bhacker@nowhere.net</email>
+        <id>JanAndersson</id>
+        <name>Jan Andersson</name>
+        <email>jan.andersson@pureload.com</email>
       </developer>
-      </developers> -->
+    </developers>
 
     <!-- Source hosted  on @jenkinsci: -->
     <scm>
