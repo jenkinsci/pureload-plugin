@@ -14,7 +14,7 @@
         <relativePath/>
     </parent>
     <artifactId>pureload</artifactId>
-    <version>1.0-Beta-13</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
         <!-- The Jenkins version required by the plugin -->
