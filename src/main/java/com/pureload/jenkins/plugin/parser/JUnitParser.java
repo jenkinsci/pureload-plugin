@@ -132,7 +132,6 @@ public class JUnitParser {
 
       private JUnitReport report;
       private Locator locator;
-      private String value;
 
       ParserHandler(String fileName) {
          this.report = new JUnitReport(fileName);
@@ -217,12 +216,6 @@ public class JUnitParser {
                report.addCurrent();
             }
          }
-      }
-
-      /** Called with the text contents in between the start and end tags of an element */
-      @Override
-      public void characters(char[] ch, int start, int length) {
-         value = new String(ch, start, length);
       }
 
       private void currentScenarioFailed(String msg) {

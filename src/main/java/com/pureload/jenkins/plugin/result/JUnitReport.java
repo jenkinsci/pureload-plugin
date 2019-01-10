@@ -30,8 +30,8 @@ public class JUnitReport {
    public void setPlcFileName(String plcFileName) { this.plcFileName = plcFileName; }
    public String getPlcFileName() { return plcFileName; }
 
-   public Date getDate() { return date; }
-   public void setDate(Date date) { this.date = date; }
+   public Date getDate() { return this.date != null ? new Date(this.date.getTime()) : null; }
+   public void setDate(Date date) { this.date = new Date(date.getTime()); }
 
    public long getExecTime() { return execTime; }
    public void setExecTime(long time) { this.execTime = time; }
