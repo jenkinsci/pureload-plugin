@@ -25,7 +25,7 @@
         <java.level>7</java.level>
     </properties>
     <name>PureLoad Plugin</name>
-    <description>Integrates PureLoad results.</description>
+    <description>Publish load test results produced by PureLoad .</description>
     <url>https://external.pureload.com/jenkins/PureLoad+Plugin.html</url>
 
     <!-- License -->

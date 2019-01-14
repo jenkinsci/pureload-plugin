@@ -4,6 +4,5 @@
   Since we don't really have anything dynamic here, let's just use static HTML.
 -->
 <div>
-  Integrates with <a href="http://www.pureload.com/">PureLoad</a> results
-  produced by PureLoad.
+  Publish load test results produced by <a href="http://www.pureload.com/">PureLoad</a>.
 </div>
