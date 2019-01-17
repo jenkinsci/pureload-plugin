@@ -13,6 +13,7 @@ import hudson.model.Run;
 /**
  * Action used to set/get JUnit report.
  */
+@SuppressWarnings("WeakerAccess")
 public class PureLoadResultsAction implements Action {
 
    private static final Logger LOGGER = Logger.getLogger(PureLoadResultsAction.class.getName());

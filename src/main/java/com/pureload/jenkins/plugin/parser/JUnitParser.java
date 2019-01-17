@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
-import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,10 +18,6 @@ import javax.xml.parsers.SAXParserFactory;
 import com.pureload.jenkins.plugin.result.JUnitReport;
 import com.pureload.jenkins.plugin.result.TestCaseResult;
 import hudson.FilePath;
-import hudson.model.Result;
-import hudson.model.Run;
-import hudson.model.TaskListener;
-import jenkins.model.ArtifactManager;
 import jenkins.util.VirtualFile;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
@@ -32,53 +27,15 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Created by janne on 2017-02-15.
+ * Static utilities to parse JUnit XML file.
  */
 public class JUnitParser {
-
-   private static final String JUNIT_REPORT_FILENAME = "junit-report.xml";
 
    private static final Logger LOGGER = Logger.getLogger(JUnitParser.class.getName());
    private static final DateFormat ISO_8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-   public static JUnitReport findAndParseJUnit(Run<?, ?> run, TaskListener listener) throws IOException {
-      VirtualFile file = findJUnitFile(run);
-      if (file == null) {
-         listener.error("Can not locate JUnit report file");
-         run.setResult(Result.FAILURE);
-         return null;
-      }
-      debug("Parsing JUnit report... ");
-      try {
-         return JUnitParser.doParse(file);
-      }
-      catch (ParseException e) {
-         listener.error(e.getMessage());
-         run.setResult(Result.FAILURE);
-      }
-      return null;
-   }
-
-   private static VirtualFile findJUnitFile(Run<?, ?> run) throws IOException {
-      debug("Locating JUnit report file... ");
-      ArtifactManager artifactManager = run.getArtifactManager();
-      return findJUnitFile(artifactManager.root().list());
-   }
-
-   private static VirtualFile findJUnitFile(VirtualFile[] list) throws IOException {
-      for (VirtualFile file : list) {
-         if (file.isDirectory()) {
-            VirtualFile foundFile = findJUnitFile(file.list());
-            if (foundFile != null) {
-               return foundFile;
-            }
-         }
-         if (file.getName().equalsIgnoreCase(JUNIT_REPORT_FILENAME)) {
-            debug("Found junit file: {0}", file);
-            return file;
-         }
-      }
-      return null;
+   static public JUnitReport parse(VirtualFile file) throws ParseException {
+      return doParse(file);
    }
 
    static public JUnitReport parse(File file) throws ParseException {
@@ -122,10 +79,6 @@ public class JUnitParser {
          }
          catch (IOException ignore) {}
       }
-   }
-
-   private static void debug(String msg, Object... args) {
-      LOGGER.info(MessageFormat.format(msg, args));
    }
 
    private static class ParserHandler extends DefaultHandler {

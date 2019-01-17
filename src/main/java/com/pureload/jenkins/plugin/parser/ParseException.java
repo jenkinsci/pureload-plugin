@@ -5,7 +5,8 @@
 package com.pureload.jenkins.plugin.parser;
 
 /** Signal error parsing JUnit file */
-class ParseException extends Exception {
+@SuppressWarnings("WeakerAccess")
+public class ParseException extends Exception {
    public ParseException(String message, Throwable cause) {
       super(message, cause);
    }
