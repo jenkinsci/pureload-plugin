@@ -94,7 +94,7 @@ public class JUnitParser {
       }
    }
 
-   static public JUnitReport doParse(FilePath file) throws ParseException {
+   private static JUnitReport doParse(FilePath file) throws ParseException {
       try {
          return doParse(file.getName(), file.read());
       }
@@ -130,14 +130,14 @@ public class JUnitParser {
 
    private static class ParserHandler extends DefaultHandler {
 
-      private JUnitReport report;
+      private final JUnitReport report;
       private Locator locator;
 
       ParserHandler(String fileName) {
          this.report = new JUnitReport(fileName);
       }
 
-      public JUnitReport getReport() { return report; }
+      JUnitReport getReport() { return report; }
 
       /** Called when XML-parser starts reading XML document */
       @Override

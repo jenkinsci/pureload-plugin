@@ -37,31 +37,18 @@ public class JUnitReport {
    public void setExecTime(long time) { this.execTime = time; }
 
    public boolean isSuccess() {
-      // First check KPIs
-      boolean hasKPIs = false;
+      // Check KPIs
       for (TestCaseResult result : results) {
          if (result.getType() == TestCaseResult.Type.KPI) {
-            hasKPIs = true;
             if (!result.isOk()) {
-               // KPI failed
+               // KPI failed; test failed
                return false;
             }
          }
       }
-      if (hasKPIs) {
-         // We have KPIs; all indicated success
-         return true;
-      }
-      // No KPIs defined; check scenario results
-      for (TestCaseResult result : results) {
-         if (result.getType() == TestCaseResult.Type.Scenario) {
-            if (!result.isOk()) {
-               // Scenario failed
-               return false;
-            }
-         }
-      }
-      // All looks good
+      // If we have KPIs this means that all are ok, and we consider this as success.
+      // If we don not have any defined KPIs we can not decide, so we also treat this
+      // as success.
       return true;
    }
 

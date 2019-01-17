@@ -12,10 +12,9 @@ public class TestCaseResult {
 
    /* Result type */
    public enum Type {
-      Scenario, KPI
+      Scenario, // Result from executing a scenario
+      KPI       // KPI Result
    }
-
-   ;
 
    private final String name;            // Name/type etc.
    private final Type type;              // result type

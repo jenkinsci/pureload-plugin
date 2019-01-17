@@ -27,7 +27,8 @@ public class JUnitParserTest {
       System.out.println(report);
       Assert.assertEquals(0, kpiResults.length);
       Assert.assertEquals(2, scenarioResults.length);
-      Assert.assertEquals(true, scenarioResults[0].isOk());
+      Assert.assertEquals(1.004F, scenarioResults[0].getExecTime(), 0.001F);
+      Assert.assertTrue(scenarioResults[0].isOk());
    }
 
    /** A simple test with 2 scenarios and 2 KPIs errors */
@@ -40,7 +41,7 @@ public class JUnitParserTest {
       System.out.println(report);
       Assert.assertEquals(1, kpiResults.length);
       Assert.assertEquals(2, scenarioResults.length);
-      Assert.assertEquals(true, scenarioResults[0].isOk());
+      Assert.assertTrue(scenarioResults[0].isOk());
    }
 
    @Test
@@ -52,7 +53,7 @@ public class JUnitParserTest {
       System.out.println(report);
       Assert.assertEquals(2, kpiResults.length);
       Assert.assertEquals(1, scenarioResults.length);
-      Assert.assertEquals(false, scenarioResults[0].isOk());
+      Assert.assertFalse(scenarioResults[0].isOk());
    }
 
    /** A simple test with 1 scenario and no errors or KPI*/
@@ -65,7 +66,7 @@ public class JUnitParserTest {
       System.out.println(report);
       Assert.assertEquals(0, kpiResults.length);
       Assert.assertEquals(1, scenarioResults.length);
-      Assert.assertEquals(true, scenarioResults[0].isOk());
+      Assert.assertTrue(scenarioResults[0].isOk());
    }
 
 }

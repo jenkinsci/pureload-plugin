@@ -47,7 +47,7 @@ public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
    @Override
    public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher,
                        @Nonnull TaskListener listener)
-       throws InterruptedException, IOException
+       throws IOException
    {
       JUnitReport report = JUnitParser.findAndParseJUnit(run, listener);
       debug("Parsed JUnit report: {0}", report);

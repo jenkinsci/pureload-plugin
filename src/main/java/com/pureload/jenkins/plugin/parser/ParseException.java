@@ -5,10 +5,7 @@
 package com.pureload.jenkins.plugin.parser;
 
 /** Signal error parsing JUnit file */
-public class ParseException extends Exception {
-   public ParseException(String message) {
-      super(message);
-   }
+class ParseException extends Exception {
    public ParseException(String message, Throwable cause) {
       super(message, cause);
    }
