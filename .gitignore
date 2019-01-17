@@ -1,0 +1,8 @@
+# MacOS General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Ignore Intellij stuff as well
+.idea
+pureload.iml
