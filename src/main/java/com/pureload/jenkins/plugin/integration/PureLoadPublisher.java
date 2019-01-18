@@ -6,8 +6,6 @@ package com.pureload.jenkins.plugin.integration;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 

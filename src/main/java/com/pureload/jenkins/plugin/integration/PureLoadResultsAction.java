@@ -8,8 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.logging.Logger;
 
@@ -105,7 +104,7 @@ public class PureLoadResultsAction implements Action {
    }
 
    private void doReadTotalSummary(InputStream is) throws IOException {
-      BufferedReader rdr = new BufferedReader(new InputStreamReader(is));
+      BufferedReader rdr = new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
       // Find start of total summary
       String line = findStartTag(rdr, "<h3>Total</h3>");
       if (line == null) {
