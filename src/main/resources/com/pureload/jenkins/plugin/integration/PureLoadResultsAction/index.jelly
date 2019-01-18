@@ -5,45 +5,46 @@
 	<l:layout css="${rootURL}/plugin/pureload/style.css" norefresh="true">
     	<st:include it="${it.build}" page="sidepanel.jelly" />
     	<l:main-panel>
-    	 <div id="results-summary">
-    	   <div class="header">
-             <img src="${rootURL}/plugin/pureload/images/check.png" alt="logo" />
-             <h1>PureLoad Results</h1>
-           </div>
+    	<div class="header">
+           <img src="${rootURL}/plugin/pureload/images/check.png" alt="logo" />
+           <h1>PureLoad Results</h1>
+        </div>
 
-           <j:set var="report" value="${it.report}"/>
+        <j:set var="report" value="${it.report}"/>
 
+        <div class="summary">
            <table>
                <tr>
-                  <th class="right transparent">PLC:</th>
-                  <td class="left transparent">${report.getPlcFileName()}</td>
+                  <th class="right">PLC:</th>
+                  <td class="left">${report.getPlcFileName()}</td>
                </tr>
                <tr>
-                  <th class="right transparent">Date Executed:</th>
-                  <td class="transparent">${report.date}</td>
+                  <th class="right">Date Executed:</th>
+                  <td>${report.date}</td>
                </tr>
                <tr>
-                   <th class="right transparent">Execution Time:</th>
-                   <td class="transparent">${report.execTime} seconds</td>
+                   <th class="right">Execution Time:</th>
+                   <td>${report.execTime} seconds</td>
                </tr>
                <j:choose>
                 <j:when test="${report.success}">
                 <tr>
-                 <th class="transparent right">Status:</th>
-                 <td class="transparent">Success</td>
+                 <th class="right">Status:</th>
+                 <td>Success</td>
                 </tr>
                 </j:when>
                 <j:otherwise>
                 <tr>
-                 <th class="transparent right">Status:</th>
-                 <td class="transparent red">Failed</td>
+                 <th class="right">Status:</th>
+                 <td class="red">Failed</td>
                 </tr>
                 </j:otherwise>
                </j:choose>
            </table>
+        </div>
 
-
-           <h3>KPI Summary</h3>
+        <h3>KPI Summary</h3>
+        <div class="summary-results">
            <table>
               <tr>
               <th class="left">KPI</th>
@@ -65,31 +66,20 @@
                  </tr>
                </j:forEach>
            </table>
+        </div>
 
-            <h3>Scenario Summary</h3>
-            <table class="source">
-            <tr>
-              <th>Scenario</th>
-              <th>Status</th>
-              <th>Avg. Exec Time (s)</th>
-            </tr>
-            <j:forEach var="scenarioResult" items="${report.getScenarioResults()}">
-              <tr>
-                <td class="left">${scenarioResult.name}</td>
-                <j:choose>
-                  <j:when test="${scenarioResult.isOk()}">
-                    <td>Ok</td>
-                  </j:when>
-                  <j:otherwise>
-                    <td class="red">Failed</td>
-                  </j:otherwise>
-                </j:choose>
-                <td>${scenarioResult.execTime}</td>
-              </tr>
-            </j:forEach>
-            </table>
-
-         </div>
+        <j:if test="${it.totalSummaryHtml != null}">
+           <h3>Execution Report</h3>
+           <div class="summary">
+             <j:out value="${it.totalSummaryHtml}"/>
+           </div>
+           <p/>
+           <j:if test="${it.totalSummaryTableHtml != null}">
+           <div class="summary-results">
+             <j:out value="${it.totalSummaryTableHtml}"/>
+           </div>
+           </j:if>
+        </j:if>
   		</l:main-panel>
   	</l:layout>
 </j:jelly>

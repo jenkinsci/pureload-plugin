@@ -18,11 +18,23 @@
     color: red;
 }
 
-#results-summary table {
-    border-collapse: separate;
+/* Summary table (label: results) */
+.summary {
+    background-color: transparent;
+    color: #111;
+}
+.summary th.red {
+    background-color: transparent;
+    color: red;
 }
 
-#results-summary th {
+/** Summary results table multiple columns) */
+.summary-results table {
+    border-collapse: separate;
+    border: none;
+}
+.summary-results th {
+    border: none;
     text-align: left;
     padding: 0.25em;
     padding-right: 1em;
@@ -30,26 +42,8 @@
     background-color: #3ca33f;
     color: #ffffff;
 }
-
-#results-summary th.left {
-    text-align: left;
-}
-
-#results-summary th.right {
-    text-align: right;
-}
-
-#results-summary th.transparent {
-    background-color: transparent;
-    color: black;
-}
-
-#results-summary th.transparent.red {
-    background-color: transparent;
-    color: red;
-}
-
-#results-summary td {
+.summary-results td {
+    border: none;
     width: 40em;
     text-align: left;
     padding: 0.25em;
@@ -57,51 +51,11 @@
     vertical-align: top;
     background-color: #ebebeb;
 }
-
-#results-summary td.left {
+.summary-results th.left {
     text-align: left;
 }
-
-#results-summary td.right {
+.summary-results th.right {
     text-align: right;
-}
-
-#results-summary td.transparent {
-    background-color: transparent;
-    color: black;
-}
-
-#results-summary td.transparent.red {
-    background-color: transparent;
-    color: red;
-}
-
-#results-summary ul {
-    margin-top: 0em;
-    margin-bottom: 0em;
-    padding-left: 0em;
-    list-style-type: none;
-}
-
-#results-summary li {
-    /*list-style-type: square;*/
-    /*margin-left: 0px;*/
-}
-
-#results-summary .transparent {
-    background-color: transparent;
-    color: #111;
-}
-
-#results-summary .error {
-    color: red;
-}
-
-#results-summary .error-box {
-    color: red;
-    font-weight: bold;
-    border: thin solid red;
-    padding: 0.5em;
 }
 
 .short-textbox{

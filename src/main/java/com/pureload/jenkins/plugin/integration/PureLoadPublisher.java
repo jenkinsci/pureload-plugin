@@ -6,6 +6,8 @@ package com.pureload.jenkins.plugin.integration;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
@@ -38,6 +40,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
 
    private static final String JUNIT_REPORT_FILENAME = "junit-report.xml";
+   private static final String EXECUTION_REPORT_FILENAME = "report.html";
    private static final Logger LOGGER = Logger.getLogger(PureLoadPublisher.class.getName());
 
    /**
@@ -61,6 +64,13 @@ public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
          debug("Creating results action...");
          PureLoadResultsAction action = new PureLoadResultsAction(run);
          action.setReport(report);
+
+         VirtualFile execReportFile = findExecutionReportFile(run);
+         if (execReportFile != null) {
+            debug("Setting total summary...");
+            action.setTotalSummary(execReportFile);
+         }
+
          debug("Adding results action...");
          run.addAction(action);
          if (!report.isSuccess()) {
@@ -91,19 +101,25 @@ public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
    private static VirtualFile findJUnitFile(Run<?, ?> run) throws IOException {
       debug("Locating JUnit report file... ");
       ArtifactManager artifactManager = run.getArtifactManager();
-      return findJUnitFile(artifactManager.root().list());
+      return findJUnitFile(artifactManager.root().list(), JUNIT_REPORT_FILENAME);
    }
 
-   private static VirtualFile findJUnitFile(VirtualFile[] list) throws IOException {
+   private static VirtualFile findExecutionReportFile(Run<?, ?> run) throws IOException {
+      debug("Locating execution report html file... ");
+      ArtifactManager artifactManager = run.getArtifactManager();
+      return findJUnitFile(artifactManager.root().list(), EXECUTION_REPORT_FILENAME);
+   }
+
+   private static VirtualFile findJUnitFile(VirtualFile[] list, String fileName) throws IOException {
       for (VirtualFile file : list) {
          if (file.isDirectory()) {
-            VirtualFile foundFile = findJUnitFile(file.list());
+            VirtualFile foundFile = findJUnitFile(file.list(), fileName);
             if (foundFile != null) {
                return foundFile;
             }
          }
-         if (file.getName().equalsIgnoreCase(JUNIT_REPORT_FILENAME)) {
-            debug("Found junit file: {0}", file);
+         if (file.getName().equalsIgnoreCase(fileName)) {
+            debug("Found file: {0}", file);
             return file;
          }
       }
