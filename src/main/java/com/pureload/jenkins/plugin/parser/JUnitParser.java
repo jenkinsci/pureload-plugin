@@ -11,7 +11,8 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -31,7 +32,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class JUnitParser {
 
-   private static final Logger LOGGER = Logger.getLogger(JUnitParser.class.getName());
    private static final DateFormat ISO_8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
    static public JUnitReport parse(VirtualFile file) throws ParseException {
@@ -82,12 +82,16 @@ public class JUnitParser {
    }
 
    private static class ParserHandler extends DefaultHandler {
+      // Regex pattern to find KPI details from system-out element.
+      static final Pattern KPI_STDOUT_PATTERN = Pattern.compile("(?s)threshold=([^}]+).*value=([^,]+)");
 
       private final JUnitReport report;
       private Locator locator;
+      private StringBuilder eltCharacters;
 
       ParserHandler(String fileName) {
          this.report = new JUnitReport(fileName);
+         eltCharacters = new StringBuilder();
       }
 
       JUnitReport getReport() { return report; }
@@ -103,6 +107,8 @@ public class JUnitParser {
       public void startElement(String uri, String localName, String qName, Attributes attributes)
           throws SAXException
       {
+         eltCharacters.setLength(0);
+
          if ("testsuite".equalsIgnoreCase(qName)) {
             String name = attributes.getValue("name");
             report.setPlcFileName(name);
@@ -169,6 +175,24 @@ public class JUnitParser {
                report.addCurrent();
             }
          }
+         else if ("system-out".equalsIgnoreCase(qName)) {
+            TestCaseResult result = report.getCurrent();
+            if ((result != null) && result.isOk() && (result.getType() == TestCaseResult.Type.KPI) &&
+                (eltCharacters.length() > 0))
+            {
+               // For a KPI result that is OK, we parse system-out to show additional details as a message.
+               String message = parseKpiSystemOut(eltCharacters);
+               result.setKpiErrorMessage(message);
+            }
+         }
+
+         eltCharacters.setLength(0);
+      }
+
+      @Override
+      public void characters(char[] ch, int start, int length) {
+         // Store element characters for possible parsing.
+         eltCharacters.append(new String(ch, start, length));
       }
 
       private void currentScenarioFailed(String msg) {
@@ -188,6 +212,12 @@ public class JUnitParser {
             Number number = numberFormat.parse(time);
             return (long) number.floatValue();
          }
+      }
+
+      /** Parse system-out element of KPI result to extract value and threshold. */
+      private static String parseKpiSystemOut(CharSequence systemOut) {
+         Matcher m = KPI_STDOUT_PATTERN.matcher(systemOut);
+         return m.find() ? "value=" + m.group(2) + " (" + m.group(1) + ")" : "";
       }
    }
 }
