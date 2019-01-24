@@ -62,7 +62,7 @@
                    <td class="red">Failed</td>
                  </j:otherwise>
                  </j:choose>
-                 <td>${kpiResult.kpiErrorMessage}</td>
+                 <td>${kpiResult.kpiMessage}</td>
                  </tr>
                </j:forEach>
            </table>

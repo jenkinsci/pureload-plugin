@@ -52,7 +52,7 @@ public class JUnitParserTest {
       TestCaseResult[] scenarioResults = report.getScenarioResults();
       System.out.println(report);
       Assert.assertEquals(2, kpiResults.length);
-      Assert.assertTrue(kpiResults[1].isOk() && kpiResults[1].getKpiErrorMessage().length() > 0); // An OK KPI result has a message.
+      Assert.assertTrue(kpiResults[1].isOk() && kpiResults[1].getKpiMessage().length() > 0); // An OK KPI result has a message.
       Assert.assertEquals(1, scenarioResults.length);
       Assert.assertFalse(scenarioResults[0].isOk());
    }

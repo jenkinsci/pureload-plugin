@@ -182,7 +182,7 @@ public class JUnitParser {
             {
                // For a KPI result that is OK, we parse system-out to show additional details as a message.
                String message = parseKpiSystemOut(eltCharacters);
-               result.setKpiErrorMessage(message);
+               result.setKpiMessage(message);
             }
          }
 
@@ -199,7 +199,7 @@ public class JUnitParser {
          TestCaseResult result = report.getCurrent();
          if (result != null) {
             result.setOk(false);
-            result.setKpiErrorMessage(msg);
+            result.setKpiMessage(msg);
          }
       }
 

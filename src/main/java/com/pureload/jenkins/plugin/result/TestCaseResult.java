@@ -20,7 +20,7 @@ public class TestCaseResult {
    private final Type type;              // result type
    private boolean ok = true;            // Ok?
    private float execTime = -1;          // Execution time (sec)
-   private String kpiErrorMessage = "";  // Error message
+   private String kpiMessage = "";       // Status message
 
    public TestCaseResult(String name, Type type) {
       this.name = name;
@@ -31,11 +31,11 @@ public class TestCaseResult {
    public Type getType() { return type; }
    public boolean isOk() { return ok; }
    public float getExecTime() { return execTime; }
-   public String getKpiErrorMessage() { return kpiErrorMessage; }
+   public String getKpiMessage() { return kpiMessage; }
 
    public void setExecTime(float execTime) { this.execTime = execTime; }
    public void setOk(boolean ok) { this.ok = ok; }
-   public void setKpiErrorMessage(String kpiErrorMessage) { this.kpiErrorMessage = kpiErrorMessage; }
+   public void setKpiMessage(String kpiMessage) { this.kpiMessage = kpiMessage; }
 
    @Override
    public String toString() {
@@ -46,8 +46,8 @@ public class TestCaseResult {
       if (execTime > -1) {
          ret += ", execTime=" + execTime;
       }
-      if (kpiErrorMessage != null) {
-         ret += ", KPI msg=" + kpiErrorMessage;
+      if (kpiMessage != null) {
+         ret += ", KPI msg=" + kpiMessage;
       }
       ret += " }";
       return ret;
