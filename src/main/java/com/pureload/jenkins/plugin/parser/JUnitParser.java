@@ -83,7 +83,7 @@ public class JUnitParser {
 
    private static class ParserHandler extends DefaultHandler {
       // Regex pattern to find KPI details from system-out element.
-      static final Pattern KPI_STDOUT_PATTERN = Pattern.compile("(?s)threshold=([^}]+).*value=([^,]+)");
+      static final Pattern KPI_STDOUT_PATTERN = Pattern.compile("(?s)threshold=([^}]+).*timestamp=(\\d+).*value=([^,]+).*status=([^,]+)");
 
       private final JUnitReport report;
       private Locator locator;
@@ -177,12 +177,10 @@ public class JUnitParser {
          }
          else if ("system-out".equalsIgnoreCase(qName)) {
             TestCaseResult result = report.getCurrent();
-            if ((result != null) && result.isOk() && (result.getType() == TestCaseResult.Type.KPI) &&
-                (eltCharacters.length() > 0))
+            if ((result != null) && (result.getType() == TestCaseResult.Type.KPI) && (eltCharacters.length() > 0))
             {
                // For a KPI result that is OK, we parse system-out to show additional details as a message.
-               String message = parseKpiSystemOut(eltCharacters);
-               result.setKpiMessage(message);
+               parseKpiSystemOut(eltCharacters, result);
             }
          }
 
@@ -214,10 +212,17 @@ public class JUnitParser {
          }
       }
 
-      /** Parse system-out element of KPI result to extract value and threshold. */
-      private static String parseKpiSystemOut(CharSequence systemOut) {
+      /** Parse system-out element of KPI to extract and update result with KPI specific information. */
+      private static void parseKpiSystemOut(CharSequence systemOut, TestCaseResult result) {
          Matcher m = KPI_STDOUT_PATTERN.matcher(systemOut);
-         return m.find() ? "value=" + m.group(2) + " (" + m.group(1) + ")" : "";
+         if (!m.find()) {
+            return; // Ignore unknown systemOut data.
+         }
+
+         result.setKpiValue(m.group(3));
+         result.setKpiThreshold(m.group(1));
+         result.setKpiStatus(m.group(4));
+         result.setKpiTimestamp(Long.valueOf(m.group(2)));
       }
    }
 }
