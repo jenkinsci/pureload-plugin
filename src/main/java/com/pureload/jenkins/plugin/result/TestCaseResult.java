@@ -4,6 +4,8 @@
 
 package com.pureload.jenkins.plugin.result;
 
+import java.util.Date;
+
 /**
  * Simple bean representing result from a test case.
  * This is either scenario result or a KPI Result.
@@ -49,6 +51,8 @@ public class TestCaseResult {
    public void setKpiThreshold(String kpiThreshold) { this.kpiThreshold = kpiThreshold; }
    public long getKpiTimestamp() { return kpiTimestamp; }
    public void setKpiTimestamp(long kpiTimestamp) { this.kpiTimestamp = kpiTimestamp; }
+   public Date getKpiTimestampDate() { return new Date(this.kpiTimestamp); }
+
 
    @Override
    public String toString() {

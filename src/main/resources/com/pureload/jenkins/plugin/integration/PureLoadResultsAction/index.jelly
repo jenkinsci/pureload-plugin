@@ -48,18 +48,24 @@
            <table>
               <tr>
               <th class="left">KPI</th>
+              <th class="left">Treshold</th>
+              <th class="left">Last Value</th>
+              <th class="left">Time Checked</th>
               <th>Status</th>
-              <th>Msg</th>
+              <th>Message</th>
               </tr>
                <j:forEach var="kpiResult" items="${report.getKpiResults()}">
                  <tr>
                  <td class="left">${kpiResult.name}</td>
+                 <td class="left">${kpiResult.kpiThreshold}</td>
+                 <td class="left">${kpiResult.kpiValue}</td>
+                 <td class="left">${kpiResult.kpiTimestampDate}</td>
                  <j:choose>
                  <j:when test="${kpiResult.isOk()}">
-                   <td>Ok</td>
+                   <td>${kpiResult.kpiStatus}</td>
                  </j:when>
                  <j:otherwise>
-                   <td class="red">Failed</td>
+                   <td class="red">${kpiResult.kpiStatus}</td>
                  </j:otherwise>
                  </j:choose>
                  <td>${kpiResult.kpiMessage}</td>
