@@ -20,7 +20,7 @@ public class TestCaseResult {
    private final Type type;              // result type
    private boolean ok = true;            // Ok?
    private float execTime = -1;          // Execution time (sec)
-   private String kpiMessage = "";       // Status message
+   private String kpiMessage = "";       // KPI Status/error message
 
    public TestCaseResult(String name, Type type) {
       this.name = name;
