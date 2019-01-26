@@ -5,7 +5,6 @@ Requirements
 
 - JDK
 
-Jenkins 2.54 is the first weekly release to require a Java 8 runtime.
 PureLoad plugin will require Java 8.
 
 - Maven
@@ -53,3 +52,9 @@ Execute:
 mvn -Djetty.port=9090 hpi:run
 
 And access http://localhost:9090/jenkins/ in a browser
+
+Push Release
+------------
+mvn org.apache.maven.plugins:maven-release-plugin:2.5:prepare org.apache.maven.plugins:maven-release-plugin:2.5:perform
+git push
+
