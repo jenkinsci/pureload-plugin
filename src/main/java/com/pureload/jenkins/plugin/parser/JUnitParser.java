@@ -222,7 +222,7 @@ public class JUnitParser {
          result.setKpiValue(m.group(3));
          result.setKpiThreshold(m.group(1));
          result.setKpiStatus(m.group(4));
-         result.setKpiTimestamp(Long.valueOf(m.group(2)));
+         result.setKpiTimestamp(Long.parseLong(m.group(2)));
       }
    }
 }
