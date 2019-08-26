@@ -27,6 +27,12 @@
     background-color: transparent;
     color: red;
 }
+.summary th.left {
+    text-align: left;
+}
+.summary th.right {
+    text-align: right;
+}
 
 /** Summary results table multiple columns) */
 .summary-results table {
@@ -60,4 +66,16 @@
 
 .short-textbox{
     width: 150px;
+}
+
+.plc {
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    margin-bottom: 24px;
+}
+
+.plc-header {
+    background-color: #3ca33f;
+    color: #ffffff;
+    border: 1px solid #aaa;
 }

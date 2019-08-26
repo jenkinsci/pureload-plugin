@@ -4,14 +4,22 @@
 
 package com.pureload.jenkins.plugin.integration;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 
 import com.pureload.jenkins.plugin.parser.JUnitParser;
 import com.pureload.jenkins.plugin.parser.ParseException;
 import com.pureload.jenkins.plugin.result.JUnitReport;
+import com.pureload.jenkins.plugin.result.PureLoadResult;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -34,10 +42,12 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * This build step tries to find JUnit result file in artifacts, parse the JUnt results file
  * and publish results (execute PureLoadResultsAction).
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("unused") // used by framework
 public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
 
+   private static final String JUNIT_REPORT_DIR = "junit";
    private static final String JUNIT_REPORT_FILENAME = "junit-report.xml";
+   private static final String EXECUTION_REPORT_DIR = "report";
    private static final String EXECUTION_REPORT_FILENAME = "report.html";
    private static final Logger LOGGER = Logger.getLogger(PureLoadPublisher.class.getName());
 
@@ -55,75 +65,94 @@ public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
                        @Nonnull TaskListener listener)
        throws IOException
    {
-      JUnitReport report = findAndParseJUnit(run, listener);
-      debug("Parsed JUnit report: {0}", report);
-      if (report != null) {
+      List<PureLoadResult> pureloadResults = findAndParseResults(run, listener);
+
+      if (!pureloadResults.isEmpty()) {
          listener.getLogger().println("Parsed JUnit report. Adding PureLoad Results action.");
          debug("Creating results action...");
          PureLoadResultsAction action = new PureLoadResultsAction(run);
-         action.setReport(report);
-
-         VirtualFile execReportFile = findExecutionReportFile(run);
-         if (execReportFile != null) {
-            debug("Setting total summary...");
-            action.setTotalSummary(execReportFile);
-         }
+         action.setPureLoadResults(pureloadResults);
 
          debug("Adding results action...");
          run.addAction(action);
-         if (!report.isSuccess()) {
-            listener.getLogger().println("JUnit report indicated failure");
-            run.setResult(Result.FAILURE);
+         for (PureLoadResult pureloadResult : pureloadResults) {
+            if (!pureloadResult.getJunitReport().isSuccess()) {
+               listener.getLogger().println("JUnit report indicated failure");
+               run.setResult(Result.FAILURE);
+            }
          }
       }
    }
 
-   private JUnitReport findAndParseJUnit(Run<?, ?> run, TaskListener listener) throws IOException {
-      VirtualFile file = findJUnitFile(run);
-      if (file == null) {
+   private List<PureLoadResult> findAndParseResults(Run<?, ?> run, TaskListener listener)
+       throws IOException
+   {
+      List<PureLoadResult> pureloadResults = new ArrayList<>();
+      ArtifactManager artifactManager = run.getArtifactManager();
+
+      doFindAndParseResults(pureloadResults, artifactManager.root(), run, listener);
+
+      if (pureloadResults.isEmpty()) {
          listener.error("Can not locate JUnit report file");
          run.setResult(Result.FAILURE);
-         return null;
       }
+
+      // Sort results based on execution date.
+      Collections.sort(pureloadResults, PureLoadResult.BY_NAME_DATE);
+
+      return pureloadResults;
+   }
+
+   private void doFindAndParseResults(List<PureLoadResult> pureloadResults, VirtualFile file,
+                                      Run<?, ?> run, TaskListener listener)
+       throws IOException
+   {
+      if (isResultDir(file)) {
+         pureloadResults.add(parseResult(file, run, listener));
+      }
+      else if (file.isDirectory()) {
+         for (VirtualFile f : file.list()) {
+            // Recurse into children.
+            doFindAndParseResults(pureloadResults, f, run, listener);
+         }
+      }
+      // else do nothing
+   }
+
+   private PureLoadResult parseResult(VirtualFile resultDir, Run<?, ?> run, TaskListener listener)
+       throws IOException
+   {
+      VirtualFile junitFile = resultDir.child(JUNIT_REPORT_DIR).child(JUNIT_REPORT_FILENAME);
+      JUnitReport junitReport = null;
       debug("Parsing JUnit report... ");
       try {
-         return JUnitParser.parse(file);
+         junitReport = JUnitParser.parse(junitFile);
+         debug("Parsed JUnit report: {0}", junitReport);
       }
       catch (ParseException e) {
          listener.error(e.getMessage());
          run.setResult(Result.FAILURE);
       }
-      return null;
+
+      PureLoadResult pureloadResult = new PureLoadResult(junitReport);
+      addTotalSummary(pureloadResult, resultDir.child(EXECUTION_REPORT_DIR).child(EXECUTION_REPORT_FILENAME));
+
+      return pureloadResult;
    }
 
-   private static VirtualFile findJUnitFile(Run<?, ?> run) throws IOException {
-      debug("Locating JUnit report file... ");
-      ArtifactManager artifactManager = run.getArtifactManager();
-      return findJUnitFile(artifactManager.root().list(), JUNIT_REPORT_FILENAME);
-   }
-
-   private static VirtualFile findExecutionReportFile(Run<?, ?> run) throws IOException {
-      debug("Locating execution report html file... ");
-      ArtifactManager artifactManager = run.getArtifactManager();
-      return findJUnitFile(artifactManager.root().list(), EXECUTION_REPORT_FILENAME);
-   }
-
-   private static VirtualFile findJUnitFile(VirtualFile[] list, String fileName) throws IOException {
-      for (VirtualFile file : list) {
-         if (file.isDirectory()) {
-            VirtualFile foundFile = findJUnitFile(file.list(), fileName);
-            if (foundFile != null) {
-               return foundFile;
-            }
-         }
-         if (file.getName().equalsIgnoreCase(fileName)) {
-            debug("Found file: {0}", file);
-            return file;
-         }
+   private static boolean isResultDir(VirtualFile dir) throws IOException {
+      if (!dir.exists() || !dir.isDirectory() || !dir.canRead()) {
+         return false;
       }
-      return null;
-   }
 
+      VirtualFile junitDir = dir.child(JUNIT_REPORT_DIR);
+      if (!junitDir.exists() || !junitDir.isDirectory() || !junitDir.canRead()) {
+         return false;
+      }
+
+      VirtualFile junitReportFile = junitDir.child(JUNIT_REPORT_FILENAME);
+      return junitReportFile.exists() && junitReportFile.canRead();
+   }
 
    private static void debug(String msg, Object... args) {
       LOGGER.fine(MessageFormat.format(msg, args));
@@ -134,7 +163,64 @@ public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
       return BuildStepMonitor.NONE;
    }
 
-   @SuppressWarnings("WeakerAccess")
+   private void addTotalSummary(PureLoadResult pureloadResult, VirtualFile reportFile) throws IOException {
+      if (reportFile.isFile() && reportFile.canRead()) {
+         try (InputStream is = reportFile.open()) {
+            doAddTotalSummary(pureloadResult, is);
+         }
+      }
+   }
+
+   private void doAddTotalSummary(PureLoadResult pureloadResult, InputStream is) throws IOException {
+      BufferedReader rdr = new BufferedReader(new InputStreamReader(is, Charset.defaultCharset()));
+      // Find start of total summary
+      String line = findStartTag(rdr, "<h3>Total</h3>");
+      if (line == null) {
+         debug("Total summary not found in execution report");
+         return;
+      }
+      // Skip "<p>"
+      rdr.readLine();
+      pureloadResult.setTotalSummaryHtml(readUpTo(rdr, "</table>", true));
+      // Find start of summary table
+      line = findStartTag(rdr, "<table");
+      if (line == null) {
+         debug("Total summary table not found in execution report");
+         return;
+      }
+      pureloadResult.setTotalSummaryTableHtml(line + readUpTo(rdr, "</table>", true));
+   }
+
+   private String findStartTag(BufferedReader rdr, String tag) throws IOException {
+      String line = rdr.readLine();
+      while (line != null) {
+         if (line.contains(tag)) {
+            return line;
+         }
+         line = rdr.readLine();
+      }
+      return null;
+   }
+
+   @SuppressWarnings("SameParameterValue")
+   private String readUpTo(BufferedReader rdr, String endTag, boolean includeEndLine) throws IOException {
+      StringBuilder sb = new StringBuilder();
+      String line = rdr.readLine();
+      while (line != null) {
+         if (line.contains(endTag)) {
+            // We have found the end; done
+            if (includeEndLine) {
+               sb.append(line).append('\n');
+            }
+            return sb.toString();
+         }
+         sb.append(line).append('\n');
+         line = rdr.readLine();
+      }
+      return null;
+   }
+
+   @SuppressWarnings("unused") // used by framework
    @Symbol("publishPureLoad")
    @Extension
    public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {

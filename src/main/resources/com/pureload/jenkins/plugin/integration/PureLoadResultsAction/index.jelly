@@ -10,82 +10,86 @@
            <h1>PureLoad Results</h1>
         </div>
 
-        <j:set var="report" value="${it.report}"/>
+        <j:forEach var="pureloadResult" items="${it.getPureLoadResults()}">
+           <j:set var="report" value="${pureloadResult.junitReport}"/>
+           <div class="plc">
+              <div class="plc-header">
+                  <h2>PLC: ${report.getPlcFileName()}</h2>
+              </div>
 
-        <div class="summary">
-           <table>
-               <tr>
-                  <th class="right">PLC:</th>
-                  <td class="left">${report.getPlcFileName()}</td>
-               </tr>
-               <tr>
-                  <th class="right">Date Executed:</th>
-                  <td>${report.date}</td>
-               </tr>
-               <tr>
-                   <th class="right">Execution Time:</th>
-                   <td>${report.execTime} seconds</td>
-               </tr>
-               <j:choose>
-                <j:when test="${report.success}">
-                <tr>
-                 <th class="right">Status:</th>
-                 <td>Success</td>
-                </tr>
-                </j:when>
-                <j:otherwise>
-                <tr>
-                 <th class="right">Status:</th>
-                 <td class="red">Failed</td>
-                </tr>
-                </j:otherwise>
-               </j:choose>
-           </table>
-        </div>
+              <div class="summary">
+                 <table>
+                     <tr>
+                        <th class="right">Date Executed:</th>
+                        <td>${report.date}</td>
+                     </tr>
+                     <tr>
+                         <th class="right">Execution Time:</th>
+                         <td>${report.execTime} seconds</td>
+                     </tr>
+                     <j:choose>
+                      <j:when test="${report.success}">
+                      <tr>
+                       <th class="right">Status:</th>
+                       <td>Success</td>
+                      </tr>
+                      </j:when>
+                      <j:otherwise>
+                      <tr>
+                       <th class="right">Status:</th>
+                       <td class="red">Failed</td>
+                      </tr>
+                      </j:otherwise>
+                     </j:choose>
+                 </table>
+              </div>
 
-        <h3>KPI Summary</h3>
-        <div class="summary-results">
-           <table>
-              <tr>
-              <th class="left">KPI</th>
-              <th class="left">Treshold</th>
-              <th class="left">Last Value</th>
-              <th class="left">Time Checked</th>
-              <th>Status</th>
-              <th>Message</th>
-              </tr>
-               <j:forEach var="kpiResult" items="${report.getKpiResults()}">
-                 <tr>
-                 <td class="left">${kpiResult.name}</td>
-                 <td class="left">${kpiResult.kpiThreshold}</td>
-                 <td class="left">${kpiResult.kpiValue}</td>
-                 <td class="left">${kpiResult.kpiTimestampDate}</td>
-                 <j:choose>
-                 <j:when test="${kpiResult.isOk()}">
-                   <td>${kpiResult.kpiStatus}</td>
-                 </j:when>
-                 <j:otherwise>
-                   <td class="red">${kpiResult.kpiStatus}</td>
-                 </j:otherwise>
-                 </j:choose>
-                 <td>${kpiResult.kpiMessage}</td>
-                 </tr>
-               </j:forEach>
-           </table>
-        </div>
+              <h3>KPI Summary</h3>
+              <div class="summary-results">
+                 <table>
+                    <tr>
+                    <th class="left">KPI</th>
+                    <th class="left">Treshold</th>
+                    <th class="left">Last Value</th>
+                    <th class="left">Time Checked</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                    </tr>
+                     <j:forEach var="kpiResult" items="${report.getKpiResults()}">
+                       <tr>
+                       <td class="left">${kpiResult.name}</td>
+                       <td class="left">${kpiResult.kpiThreshold}</td>
+                       <td class="left">${kpiResult.kpiValue}</td>
+                       <td class="left">${kpiResult.kpiTimestampDate}</td>
+                       <j:choose>
+                       <j:when test="${kpiResult.isOk()}">
+                         <td>${kpiResult.kpiStatus}</td>
+                       </j:when>
+                       <j:otherwise>
+                         <td class="red">${kpiResult.kpiStatus}</td>
+                       </j:otherwise>
+                       </j:choose>
+                       <td>${kpiResult.kpiMessage}</td>
+                       </tr>
+                     </j:forEach>
+                 </table>
+              </div>
 
-        <j:if test="${it.totalSummaryHtml != null}">
-           <h3>Execution Report</h3>
-           <div class="summary">
-             <j:out value="${it.totalSummaryHtml}"/>
-           </div>
-           <p/>
-           <j:if test="${it.totalSummaryTableHtml != null}">
-           <div class="summary-results">
-             <j:out value="${it.totalSummaryTableHtml}"/>
-           </div>
-           </j:if>
-        </j:if>
+              <j:if test="${pureloadResult.totalSummaryHtml != null}">
+                 <h3>Execution Report</h3>
+                 <div class="summary">
+                   <j:out value="${pureloadResult.totalSummaryHtml}"/>
+                 </div>
+                 <p/>
+                 <j:if test="${pureloadResult.totalSummaryTableHtml != null}">
+                 <div class="summary-results">
+                   <j:out value="${pureloadResult.totalSummaryTableHtml}"/>
+                 </div>
+                 </j:if>
+              </j:if>
+           </div> <!-- plc -->
+        </j:forEach>
+
   		</l:main-panel>
   	</l:layout>
 </j:jelly>
