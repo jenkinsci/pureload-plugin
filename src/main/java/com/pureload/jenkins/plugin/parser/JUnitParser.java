@@ -47,7 +47,7 @@ public class JUnitParser {
          return doParse(file.getName(), file.open());
       }
       catch (IOException e) {
-         throw new ParseException("Can not parse: " + file.getName(), e);
+         throw new ParseException("Can not parse: '" + file.getName() + "': " + e, e);
       }
    }
 
@@ -56,7 +56,7 @@ public class JUnitParser {
          return doParse(file.getName(), file.read());
       }
       catch (IOException | InterruptedException e) {
-         throw new ParseException("Can not parse: " + file.getName(), e);
+         throw new ParseException("Can not parse: '" + file.getName() + "': " + e, e);
       }
    }
 
@@ -71,7 +71,7 @@ public class JUnitParser {
          return handler.getReport();
       }
       catch (Exception e) {
-         throw new ParseException("Can not doParse: " + fileName, e);
+         throw new ParseException("Can not parse: '" + fileName + "': " + e, e);
       }
       finally {
          try {
@@ -118,14 +118,14 @@ public class JUnitParser {
                report.setDate(date);
             }
             catch (java.text.ParseException e) {
-               throw new SAXParseException("Can not doParse timestamp attribute", locator);
+               throw new SAXParseException("Can not parse timestamp attribute", locator);
             }
             timeStr = attributes.getValue("time");
             try {
                report.setExecTime(parseTime(timeStr));
             }
             catch (java.text.ParseException e) {
-               throw new SAXParseException("Can not doParse time attribute", locator);
+               throw new SAXParseException("Can not parse time attribute", locator);
             }
          }
          else if ("testcase".equalsIgnoreCase(qName)) {
@@ -144,12 +144,12 @@ public class JUnitParser {
                // Create new result
                result = new TestCaseResult(name, type);
                if (type == TestCaseResult.Type.Scenario) {
-                  // Scenario result; doParse time
+                  // Scenario result; parse time
                   try {
                      result.setExecTime(parseTime(time) / 1000.0f);
                   }
                   catch (java.text.ParseException e) {
-                     throw new SAXParseException("Can not doParse time attribute", locator);
+                     throw new SAXParseException("Can not parse time attribute", locator);
                   }
                }
                result.setOk(status.equalsIgnoreCase("Ok"));

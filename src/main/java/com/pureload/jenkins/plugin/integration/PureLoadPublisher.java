@@ -107,32 +107,32 @@ public class PureLoadPublisher extends Recorder implements SimpleBuildStep {
                                       Run<?, ?> run, TaskListener listener)
        throws IOException
    {
-      if (isResultDir(file)) {
-         pureloadResults.add(parseResult(file, run, listener));
-      }
-      else if (file.isDirectory()) {
-         for (VirtualFile f : file.list()) {
-            // Recurse into children.
-            doFindAndParseResults(pureloadResults, f, run, listener);
-         }
-      }
-      // else do nothing
-   }
-
-   private PureLoadResult parseResult(VirtualFile resultDir, Run<?, ?> run, TaskListener listener)
-       throws IOException
-   {
-      VirtualFile junitFile = resultDir.child(JUNIT_REPORT_DIR).child(JUNIT_REPORT_FILENAME);
-      JUnitReport junitReport = null;
-      debug("Parsing JUnit report... ");
       try {
-         junitReport = JUnitParser.parse(junitFile);
-         debug("Parsed JUnit report: {0}", junitReport);
+         if (isResultDir(file)) {
+            pureloadResults.add(parseResult(file, run, listener));
+         }
+         else if (file.isDirectory()) {
+            for (VirtualFile f : file.list()) {
+               // Recurse into children.
+               doFindAndParseResults(pureloadResults, f, run, listener);
+            }
+         }
+         // else do nothing
       }
       catch (ParseException e) {
          listener.error(e.getMessage());
          run.setResult(Result.FAILURE);
       }
+   }
+
+   private PureLoadResult parseResult(VirtualFile resultDir, Run<?, ?> run, TaskListener listener)
+       throws IOException, ParseException
+   {
+      VirtualFile junitFile = resultDir.child(JUNIT_REPORT_DIR).child(JUNIT_REPORT_FILENAME);
+
+      debug("Parsing JUnit report... ");
+      JUnitReport junitReport = JUnitParser.parse(junitFile);
+      debug("Parsed JUnit report: {0}", junitReport);
 
       PureLoadResult pureloadResult = new PureLoadResult(junitReport);
       addTotalSummary(pureloadResult, resultDir.child(EXECUTION_REPORT_DIR).child(EXECUTION_REPORT_FILENAME));
